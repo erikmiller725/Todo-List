@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" ng-app="todomvc" data-framework="angularjs">
+	<head>
+		<meta charset="utf-8">
+		<title>AngularJS • TodoMVC</title>
+			<link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
+			<link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="../assets/css/index.css">
+	</head>
+	<body>
+		<section id="todoapp" ng-controller="TodoCtrl">
+			<header id="header">
+				<h1>todos</h1>
+				<form id="todo-form">
+					<div class="inputContainer">
+						<input id="new-todo" placeholder="What needs to be done?" ng-model="newTodo" autofocus>
+					</div>
+					<div class="inputContainer left last">
+						<select class="form-control col-sm-10" ng-model="priority">
+							<option value='Normal'>Normal</option>
+							<option value='Medium'>Medium</option>
+							<option value='High'>High</option>
+						</select>
+					</div>
+					<div class="inputContainer last right">
+						<div class="form-group">
+							<p class="input-group" ng-controller="MyController">
+								<input type="text" class="form-control" datetime-picker="dd MMM yyyy HH:mm" ng-model="date" is-open="open.date" ng-click="openCalendar($event, 'date')" readonly="readonly"/>
+								<span class="input-group-btn" >
+									<button type="button" class="btn btn-default" ng-click="openCalendar($event, 'date')"><i class="fa fa-calendar"></i></button>
+								</span>
+							</p>
+						</div>
+						<button class="btn btn-primary" ng-click="addTodo()"><i class="fa fa-plus icon"></i> Add task</button>
+					</div>
+					<div class="row"></div>
+				</form>
+			</header>
+			<section id="main" ng-show="todos.length">
+				<input id="toggle-all" class="fa" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)">
+				<label for="toggle-all">Mark all as complete</label>
+				<ul id="todo-list">
+					<li ng-repeat="todo in todos | orderBy: sortBy | filter:statusFilter track by $index " ng-class="{completed: todo.completed, editing: todo == editedTodo}">
+						<div class="view">
+							<input class="toggle" type="checkbox" ng-model="todo.completed" ng-change="todoCompleted(todo)">
+							<label ng-dblclick="editTodo(todo)">{{ todo.title }} | {{ todo.priority }} | {{ todo.ShowDate }}</label>
+							<button class="destroy" ng-click="removeTodo(todo)"></button>
+						</div>
+
+						<form ng-submit="doneEditing(todo)">
+							<div class="edit">
+								<div class="inputContainer">
+									<input id="edit-todo" placeholder="What needs to be done?" ng-model="todo.title">
+								</div>
+								<div class="inputContainer left last">
+									<select class="form-control col-sm-10" ng-model="todo.priority">
+										<option value='Normal'>Normal</option>
+										<option value='Medium'>Medium</option>
+										<option value='High'>High</option>
+									</select>
+								</div>
+								<div class="inputContainer last right">
+									<p class="input-group" ng-controller="MyController">
+										<input type="text" class="form-control" datetime-picker="dd MMM yyyy HH:mm" ng-model="todo.ShowDate" is-open="open.date" ng-click="openCalendar($event, 'date')" readonly="readonly"/>
+										<span class="input-group-btn" >
+										<button type="button" class="btn btn-default" ng-click="openCalendar($event, 'date')"><i class="fa fa-calendar"></i></button>
+										</span>
+									</p>
+									<button class="save btn btn-primary" ng-click="addTodo()"><i class="fa fa-save icon"></i> Save</button>
+									<button class="cancel btn btn-primary" ng-click="revertEditing(todo)"><i class="fa fa-close icon"></i> Cancel</button>
+								</div>
+								<div class="row"></div>
+							</div>
+						</form>
+					</li>
+				</ul>
+			</section>
+			<footer id="footer" ng-show="todos.length">
+				<span id="todo-count"><strong>{{remainingCount}}</strong>
+					<ng-pluralize count="remainingCount" when="{ one: 'item left', other: 'items left' }"></ng-pluralize>
+				</span>
+				<ul id="filters">
+					<li>
+						<a ng-class="{selected: location.path() == '/'} " href="#/">All</a>
+					</li>
+					<li>
+						<a ng-class="{selected: location.path() == '/active'}" href="#/active">Active</a>
+					</li>
+					<li>
+						<a ng-class="{selected: location.path() == '/completed'}" href="#/completed">Completed</a>
+					</li>
+					<li>
+						<a href="" ng-click="sortCheck()">Sort by Time <i class="fa fa-arrow-down" ng-show="sort"></i><i class="fa fa-arrow-up" ng-hide="sort"></i></a>
+					</li>
+				</ul>
+				<button id="clear-completed" ng-click="clearCompletedTodos()" ng-show="remainingCount < todos.length">Clear completed</button>
+			</footer>
+		</section>
+		<script src="../assets/angular/angular.js"></script>
+		<script src="../app/app.js"></script>
+		<script src="../app/directives/datetime-picker.js"></script>
+		<script src="../app/directives/ui-bootstrap.tpls.js"></script>
+		<script src="../app/controllers/todoCtrl.js"></script>
+		<script src="../app/controllers/datePickerCtrl.js"></script>
+		<script src="../app/services/todoStorage.js"></script>
+	</body>
+</html>
